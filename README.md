@@ -1,8 +1,8 @@
 # GODMODE — Supreme Agent Directive & Operating System
 
 [![Agent OS](https://img.shields.io/badge/Agent%20OS-GODMODE-blueviolet?style=for-the-badge)](https://github.com/akabrrown/godmode)
-[![Skills](https://img.shields.io/badge/Skills-195%2B%20Specialized-success?style=for-the-badge)](.agents/skills)
-[![Workflows](https://img.shields.io/badge/Workflows-29%20Production-informational?style=for-the-badge)](.agents/workflows)
+[![Skills](https://img.shields.io/badge/Skills-289%2B%20Specialized-success?style=for-the-badge)](.agents/skills)
+[![Workflows](https://img.shields.io/badge/Workflows-30%20Production-informational?style=for-the-badge)](.agents/workflows)
 [![Rules](https://img.shields.io/badge/Rules-13%20Directives-critical?style=for-the-badge)](.agents/rules)
 
 > **GODMODE** is the supreme operating contract and intelligence substrate for AI coding agents (**Antigravity**, **Claude Code**, **Cursor**, **Codex**, and **Gemini CLI**). 
@@ -103,8 +103,8 @@ Isolated sub-agents run in parallel with clear context boundaries. Persistent me
 │   │   ├── godmode-token-compression/
 │   │   ├── godmode-tool-intent-telemetry/
 │   │   ├── playwright-testing/
-│   │   └── ... (195 total skills)
-│   └── workflows/                 # 29 Automated multi-phase workflows
+│   │   └── ... (295 total skills)
+│   └── workflows/                 # 30 Automated multi-phase workflows
 │       ├── godmode_build.md
 │       ├── godmode_design.md
 │       ├── godmode_market.md
