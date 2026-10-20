@@ -1,0 +1,38 @@
+# Third-party raw reference repositories
+agent-skills-main/
+antigravity-config-v2/
+antigravity-knowledge-pack/
+caveman-main/
+deer-flow-main/
+LibreChat-main/
+marketingskills-main/
+OpenMontage-main/
+superpowers-main/
+taste-skill-main/
+ui-ux-pro-max-skill-main/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.bak
+*~
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Package manager & build artifacts
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+build/
+out/
+scratch/
