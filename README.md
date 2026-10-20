@@ -170,6 +170,45 @@ Antigravity automatically discovers and binds `.agents/` as its workspace custom
 ### For Claude Code / Cursor / Codex
 Copy or symlink `.agents/AGENTS.md` to `AGENTS.md` at your project root. The rules and skills will be discovered and applied dynamically.
 
+### For LibreChat Web Portal
+1. Run `npm install && npm run build` in this directory.
+2. In LibreChat's `librechat.yaml`, the `godmode` MCP server is pre-configured:
+```yaml
+mcpServers:
+  godmode:
+    type: stdio
+    command: node
+    args:
+      - "c:\\Users\\Dell\\Desktop\\PROjects\\Agent GODMODE\\dist\\bin\\godmode.js"
+      - mcp
+    timeout: 300000
+```
+3. Start LibreChat: all 289 skills are instantly available as native agent tools.
+
+---
+
+## CLI & Pipeline Runner
+
+```bash
+# Build the TypeScript project
+npm run build
+
+# Run the full Vitest suite (27 unit tests across 6 suites)
+npm test
+
+# Check system status and indexed assets
+node dist/bin/godmode.js status
+
+# Start the stdio MCP Server for external agents
+node dist/bin/godmode.js mcp
+
+# Execute a Rule Zero pipeline
+node dist/bin/godmode.js run build "Writers website" "Implement Stripe webhook handler"
+node dist/bin/godmode.js run media "Writers website" "Produce 15s launch video"
+node dist/bin/godmode.js run research "Agent GODMODE" "Analyze multi-agent orchestration"
+node dist/bin/godmode.js run market "Writers website" "Generate conversion copywriting"
+```
+
 ---
 
 ## License
