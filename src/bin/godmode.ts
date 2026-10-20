@@ -8,6 +8,7 @@ import { WorkspaceBridge } from '../bridge/workspace.js';
 import { TelemetryManager } from '../telemetry/intent.js';
 import { GodmodeMcpServer } from '../mcp/server.js';
 import { PipelineRunner, type PipelineCommand } from '../pipeline/runner.js';
+import { GodmodeWebServer } from '../web/server.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +38,35 @@ async function main() {
         bridge,
       });
       await server.startStdio();
+      break;
+    }
+
+    case 'serve':
+    case 'start': {
+      const port = parseInt(process.env.PORT || '4004', 10);
+      const runner = new PipelineRunner({
+        skillRegistry,
+        workflowRegistry,
+        bridge,
+        telemetry,
+      });
+
+      const webServer = new GodmodeWebServer({
+        port,
+        skillRegistry,
+        workflowRegistry,
+        bridge,
+        telemetry,
+        runner,
+      });
+
+      await webServer.start();
+      console.log(`\n======================================================`);
+      console.log(`🚀 GODMODE OS Web Studio running at: http://localhost:${port}`);
+      console.log(`- 289 Skills Indexed`);
+      console.log(`- 30 Workflows Ready`);
+      console.log(`- Telemetry SSE Stream active`);
+      console.log(`======================================================\n`);
       break;
     }
 
