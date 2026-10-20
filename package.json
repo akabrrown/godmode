@@ -1,0 +1,36 @@
+{
+  "name": "godmode-os",
+  "version": "1.0.0",
+  "description": "GODMODE OS — The Autonomous AI Engineering, Media & Intelligence Studio",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "godmode": "dist/bin/godmode.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/bin/godmode.js",
+    "mcp": "node dist/bin/godmode.js mcp",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "mcp",
+    "orchestrator",
+    "tdd",
+    "godmode"
+  ],
+  "author": "akabrrown",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "typescript": "^5.8.2",
+    "vitest": "^5.0.5"
+  }
+}
