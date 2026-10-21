@@ -21,10 +21,11 @@ async function main() {
   const skillsDir = path.resolve(rootDir, '.agents/skills');
   const workflowsDir = path.resolve(rootDir, '.agents/workflows');
   const workspaceRoot = rootDir;
+  const parentProjectsDir = path.resolve(rootDir, '..');
 
   const skillRegistry = new SkillRegistry(skillsDir);
   const workflowRegistry = new WorkflowRegistry(workflowsDir);
-  const bridge = new WorkspaceBridge(workspaceRoot);
+  const bridge = new WorkspaceBridge(workspaceRoot, [parentProjectsDir]);
   const telemetry = new TelemetryManager();
 
   await skillRegistry.initialize();

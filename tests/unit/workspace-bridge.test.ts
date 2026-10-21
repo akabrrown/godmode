@@ -55,4 +55,18 @@ describe('WorkspaceBridge (TDD Red -> Green)', () => {
     expect(projects).toContain('ProjectA');
     expect(projects).toContain('ProjectB');
   });
+
+  it('should resolve projects in secondary/parent projects root', async () => {
+    const parentDir = path.resolve(testRoot, 'external_projects');
+    await fs.mkdir(path.join(parentDir, 'Writers website'), { recursive: true });
+
+    const multiBridge = new WorkspaceBridge(testRoot, [parentDir]);
+    const resolved = multiBridge.resolveSafePath('Writers website');
+    expect(resolved).toBe(path.join(parentDir, 'Writers website'));
+
+    const projects = await multiBridge.listProjects();
+    expect(projects).toContain('Writers website');
+
+    await fs.rm(parentDir, { recursive: true, force: true });
+  });
 });

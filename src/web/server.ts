@@ -424,10 +424,24 @@ export class GodmodeWebServer {
       </div>
 
       <div class="form-group">
-        <label>Target Project</label>
-        <select id="projectSelect">
-          <option value=".">Current Workspace (Agent GODMODE)</option>
-        </select>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <label style="margin-bottom: 0;">Target Project</label>
+          <button type="button" id="togglePathBtn" onclick="togglePathMode()" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); color: var(--accent); cursor: pointer; font-size: 0.75rem; font-family: inherit; font-weight: 500; border-radius: 4px; padding: 2px 8px; transition: all 0.15s ease;">
+            Custom Path ✏️
+          </button>
+        </div>
+
+        <div id="selectProjectContainer" style="display: flex; flex-direction: column; gap: 8px;">
+          <input type="text" id="projectSearchInput" placeholder="Quick search projects in PROjects/..." oninput="filterProjects()" style="padding: 8px 12px; font-size: 0.85rem;" />
+          <select id="projectSelect" size="5" style="height: auto; max-height: 140px; overflow-y: auto;">
+            <option value="." selected>Current Workspace (Agent GODMODE)</option>
+          </select>
+        </div>
+
+        <div id="customProjectContainer" style="display: none; flex-direction: column; gap: 6px;">
+          <input type="text" id="customPathInput" placeholder="Enter absolute or relative path (e.g. Writers website, C:\...)" />
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Supports folder names in PROjects or absolute filesystem paths within allowed roots.</span>
+        </div>
       </div>
 
       <div class="form-group">
@@ -462,12 +476,32 @@ export class GodmodeWebServer {
   <script>
     let currentStudio = 'build';
     let allSkills = [];
+    let allProjects = [];
+    let isCustomPath = false;
 
     function setStudio(studio, btn) {
       currentStudio = studio;
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       logConsole('Switched active studio to ' + studio.toUpperCase());
+    }
+
+    function togglePathMode() {
+      isCustomPath = !isCustomPath;
+      const selectBox = document.getElementById('selectProjectContainer');
+      const customBox = document.getElementById('customProjectContainer');
+      const btn = document.getElementById('togglePathBtn');
+
+      if (isCustomPath) {
+        selectBox.style.display = 'none';
+        customBox.style.display = 'flex';
+        btn.textContent = 'Choose from List 📋';
+        document.getElementById('customPathInput').focus();
+      } else {
+        selectBox.style.display = 'flex';
+        customBox.style.display = 'none';
+        btn.textContent = 'Custom Path ✏️';
+      }
     }
 
     function logConsole(text, isOutcome = false) {
@@ -479,6 +513,25 @@ export class GodmodeWebServer {
       panel.scrollTop = panel.scrollHeight;
     }
 
+    function renderProjects(projects) {
+      const sel = document.getElementById('projectSelect');
+      sel.innerHTML = '<option value="." selected>Current Workspace (Agent GODMODE)</option>';
+      projects.forEach(p => {
+        if (p !== 'Agent GODMODE') {
+          const opt = document.createElement('option');
+          opt.value = p;
+          opt.textContent = '📁 ' + p;
+          sel.appendChild(opt);
+        }
+      });
+    }
+
+    function filterProjects() {
+      const q = document.getElementById('projectSearchInput').value.toLowerCase().trim();
+      const filtered = allProjects.filter(p => p.toLowerCase().includes(q));
+      renderProjects(filtered);
+    }
+
     async function loadInitialData() {
       try {
         const [projRes, skillsRes] = await Promise.all([
@@ -486,16 +539,12 @@ export class GodmodeWebServer {
           fetch('/api/skills').then(r => r.json())
         ]);
 
-        const sel = document.getElementById('projectSelect');
-        projRes.forEach(p => {
-          const opt = document.createElement('option');
-          opt.value = p;
-          opt.textContent = p;
-          sel.appendChild(opt);
-        });
+        allProjects = Array.isArray(projRes) ? projRes : [];
+        renderProjects(allProjects);
 
         allSkills = skillsRes;
         renderSkills(allSkills);
+        logConsole('Discovered ' + allProjects.length + ' projects across workspace and PROjects root.');
       } catch (err) {
         logConsole('Failed to load initial data: ' + err.message);
       }
@@ -519,9 +568,18 @@ export class GodmodeWebServer {
     }
 
     async function triggerPipeline() {
-      const targetProject = document.getElementById('projectSelect').value;
-      const taskDescription = document.getElementById('taskInput').value.trim();
+      let targetProject = '.';
+      if (isCustomPath) {
+        targetProject = document.getElementById('customPathInput').value.trim();
+        if (!targetProject) {
+          alert('Please enter a target project path.');
+          return;
+        }
+      } else {
+        targetProject = document.getElementById('projectSelect').value;
+      }
 
+      const taskDescription = document.getElementById('taskInput').value.trim();
       if (!taskDescription) {
         alert('Please specify a task directive.');
         return;

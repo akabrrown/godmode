@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import path from 'node:path';
 
 export class SecurityViolationError extends Error {
@@ -10,34 +11,66 @@ export class SecurityViolationError extends Error {
 
 export class WorkspaceBridge {
   private rootDirectory: string;
+  private allowedRoots: string[];
 
-  constructor(rootDirectory: string) {
+  constructor(rootDirectory: string, additionalRoots: string[] = []) {
     this.rootDirectory = path.resolve(rootDirectory);
+    this.allowedRoots = [
+      this.rootDirectory,
+      ...additionalRoots.map((r) => path.resolve(r)),
+    ];
   }
 
   /**
-   * Resolves a relative path safely inside rootDirectory.
+   * Resolves a path safely inside one of the allowed roots.
+   * Supports relative project names, subpaths, and absolute paths within approved roots.
    * Prevents path traversal and null-byte injection.
    */
-  resolveSafePath(relativePath: string): string {
-    if (relativePath.includes('\0')) {
+  resolveSafePath(targetPath: string): string {
+    if (targetPath.includes('\0')) {
       throw new SecurityViolationError('Null byte detected in path.');
     }
 
-    const resolved = path.resolve(this.rootDirectory, relativePath);
-    const normalizedRoot = path.normalize(this.rootDirectory);
+    // 1. If path is absolute, verify it belongs to one of the allowed roots
+    if (path.isAbsolute(targetPath)) {
+      const normalized = path.normalize(targetPath);
+      const isAllowed = this.allowedRoots.some((root) => {
+        const normRoot = path.normalize(root);
+        return normalized === normRoot || normalized.startsWith(normRoot + path.sep);
+      });
 
-    // Ensure the resolved path strictly starts with rootDirectory
-    if (
-      resolved !== normalizedRoot &&
-      !resolved.startsWith(normalizedRoot + path.sep)
-    ) {
+      if (!isAllowed) {
+        throw new SecurityViolationError(
+          `Target path '${normalized}' is outside allowed roots: [${this.allowedRoots.join(', ')}]`
+        );
+      }
+      return normalized;
+    }
+
+    // 2. Check if relative path matches an existing entry in any secondary/additional root
+    for (const root of this.allowedRoots) {
+      const candidate = path.resolve(root, targetPath);
+      const normRoot = path.normalize(root);
+      if (candidate === normRoot || candidate.startsWith(normRoot + path.sep)) {
+        if (fsSync.existsSync(candidate)) {
+          return candidate;
+        }
+      }
+    }
+
+    // 3. Fallback: resolve against primary root and ensure it does not escape
+    const candidate = path.resolve(this.rootDirectory, targetPath);
+    const normPrimary = path.normalize(this.rootDirectory);
+    const isWithinPrimary =
+      candidate === normPrimary || candidate.startsWith(normPrimary + path.sep);
+
+    if (!isWithinPrimary) {
       throw new SecurityViolationError(
-        `Path traversal attempt detected. Target path '${resolved}' is outside allowed root '${normalizedRoot}'.`
+        `Path traversal attempt detected. Target path '${candidate}' is outside allowed root '${normPrimary}'.`
       );
     }
 
-    return resolved;
+    return candidate;
   }
 
   /**
@@ -58,20 +91,32 @@ export class WorkspaceBridge {
   }
 
   /**
-   * Lists child project directories within the root directory.
+   * Lists child project directories across all allowed roots.
    */
   async listProjects(): Promise<string[]> {
-    try {
-      const entries = await fs.readdir(this.rootDirectory, { withFileTypes: true });
-      return entries
-        .filter((entry) => entry.isDirectory())
-        .map((entry) => entry.name);
-    } catch {
-      return [];
+    const projectNames = new Set<string>();
+
+    for (const root of this.allowedRoots) {
+      try {
+        const entries = await fs.readdir(root, { withFileTypes: true });
+        for (const entry of entries) {
+          if (entry.isDirectory() && !entry.name.startsWith('.')) {
+            projectNames.add(entry.name);
+          }
+        }
+      } catch {
+        // Skip inaccessible roots
+      }
     }
+
+    return Array.from(projectNames).sort();
   }
 
   getRootDirectory(): string {
     return this.rootDirectory;
+  }
+
+  getAllowedRoots(): string[] {
+    return [...this.allowedRoots];
   }
 }
