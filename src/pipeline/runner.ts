@@ -4,7 +4,7 @@ import { WorkflowRegistry } from '../registry/workflows.js';
 import { WorkspaceBridge } from '../bridge/workspace.js';
 import { TelemetryManager } from '../telemetry/intent.js';
 
-export type PipelineCommand = 'build' | 'media' | 'research' | 'market' | 'audit';
+export type PipelineCommand = 'build' | 'design' | 'media' | 'research' | 'market' | 'audit';
 export type PipelineStage = 'PREFLIGHT' | 'DISCOVERY' | 'STAGE_EXEC' | 'REVIEW_GATE' | 'COMPLETED' | 'FAILED';
 export type PipelineStatus = 'RUNNING' | 'FINISHED' | 'ABORTED' | 'WAITING_APPROVAL';
 
@@ -128,6 +128,15 @@ export class PipelineRunner {
           'godmode-software-engineering',
           'test-driven-development',
           'godmode-auth-security-hardening',
+          'playwright-testing',
+        ];
+        break;
+      case 'design':
+        manifest.requiredSkills = [
+          'godmode-ui-ux-anti-slop',
+          'ui-ux-pro-max',
+          'design-system',
+          'ui-styling',
           'playwright-testing',
         ];
         break;

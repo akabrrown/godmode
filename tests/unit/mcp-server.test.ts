@@ -50,11 +50,11 @@ describe('GodmodeMcpServer (TDD Red -> Green)', () => {
     expect(result.content[0].text).toContain('UI/UX Pro Max');
   });
 
-  it('should execute list_workflows and return 30 workflows', async () => {
+  it('should execute list_workflows and return all indexed workflows', async () => {
     const result = await mcpServer.executeTool('list_workflows', {});
     expect(result.content).toBeDefined();
     const parsed = JSON.parse(result.content[0].text);
-    expect(parsed.length).toBe(30);
+    expect(parsed.length).toBeGreaterThanOrEqual(30);
   });
 
   it('should handle get_skill for non-existent skill with error payload', async () => {

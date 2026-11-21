@@ -70,6 +70,8 @@ Every deliverable must pass two strict tests before it is considered finished:
 |---|---|---|
 | New Feature / Software Engineering | `godmode-software-engineering` | `/godmode-build` |
 | UI/UX Design, Refactor, Page Build | `godmode-ui-ux-anti-slop` | `/godmode-design` |
+| UI/UX Design System Plan & Tokens | `ui-ux-pro-max`, `godmode-ui-ux-anti-slop` | `/design-plan` |
+| 7-Phase UI/UX & WCAG Review | `godmode-ui-ux-anti-slop`, `playwright-testing` | `/design-review` |
 | Technical Marketing, CRO, SEO, Launch | `godmode-marketing-growth` | `/godmode-market` |
 | Deep Research, Academic Review, Intelligence | `godmode-deep-research` | `/godmode-research` |
 | API Specification & Architecture | `godmode-api-design-blueprints` | Stage execution |

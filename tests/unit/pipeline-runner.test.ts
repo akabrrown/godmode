@@ -70,6 +70,22 @@ describe('PipelineRunner (TDD Red -> Green)', () => {
     expect(discoveryManifest.requiredSkills).toContain('test-driven-development');
   });
 
+  it('should map UI/UX Pro Max and anti-slop skills for design command', async () => {
+    const manifest = runner.createPipeline({
+      command: 'design',
+      targetProject: 'Writers website',
+      taskDescription: 'Generate design system tokens and anti-slop theme',
+    });
+
+    await runner.executePreflight(manifest.pipelineId);
+    const discoveryManifest = await runner.executeDiscovery(manifest.pipelineId);
+
+    expect(discoveryManifest.currentStage).toBe('STAGE_EXEC');
+    expect(discoveryManifest.requiredSkills).toContain('godmode-ui-ux-anti-slop');
+    expect(discoveryManifest.requiredSkills).toContain('ui-ux-pro-max');
+    expect(discoveryManifest.requiredSkills).toContain('design-system');
+  });
+
   it('should execute review gate and verify zero AI tells & security checks', async () => {
     const manifest = runner.createPipeline({
       command: 'build',

@@ -12,6 +12,8 @@ taste-skill-main/
 ui-ux-pro-max-skill-main/
 
 # OS & Editor files
+__pycache__/
+*.py[cod]
 .DS_Store
 Thumbs.db
 desktop.ini

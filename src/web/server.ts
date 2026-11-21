@@ -418,6 +418,7 @@ export class GodmodeWebServer {
     <section class="studio-panel">
       <div class="tabs">
         <button class="tab-btn active" onclick="setStudio('build', this)">Dev Studio (/build)</button>
+        <button class="tab-btn" onclick="setStudio('design', this)">Design Studio (/design)</button>
         <button class="tab-btn" onclick="setStudio('media', this)">Media Studio (/media)</button>
         <button class="tab-btn" onclick="setStudio('research', this)">Research Engine (/research)</button>
         <button class="tab-btn" onclick="setStudio('market', this)">Growth Studio (/market)</button>

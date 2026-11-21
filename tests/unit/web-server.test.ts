@@ -69,7 +69,7 @@ describe('GodmodeWebServer (TDD Red -> Green)', () => {
     expect(res.statusCode).toBe(200);
     expect(res.data.status).toBe('OPERATIONAL');
     expect(res.data.skillsCount).toBeGreaterThanOrEqual(285);
-    expect(res.data.workflowsCount).toBe(30);
+    expect(res.data.workflowsCount).toBeGreaterThanOrEqual(30);
   });
 
   it('should serve /api/skills with search query', async () => {
@@ -79,11 +79,11 @@ describe('GodmodeWebServer (TDD Red -> Green)', () => {
     expect(res.data.length).toBeGreaterThan(0);
   });
 
-  it('should serve /api/workflows listing all 30 workflows', async () => {
+  it('should serve /api/workflows listing all workflows', async () => {
     const res = await get('/api/workflows');
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.data)).toBe(true);
-    expect(res.data.length).toBe(30);
+    expect(res.data.length).toBeGreaterThanOrEqual(30);
   });
 
   it('should serve HTML dashboard on root /', async () => {
