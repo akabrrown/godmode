@@ -13,9 +13,12 @@ describe('WorkflowRegistry (TDD Red -> Green)', () => {
 
   it('should index all workflows in .agents/workflows', () => {
     const allWorkflows = registry.getAllWorkflows();
-    expect(allWorkflows.length).toBeGreaterThanOrEqual(31);
+    expect(allWorkflows.length).toBeGreaterThanOrEqual(34);
     expect(registry.getWorkflow('design-plan')).toBeDefined();
     expect(registry.getWorkflow('design-review')).toBeDefined();
+    expect(registry.getWorkflow('system-design')).toBeDefined();
+    expect(registry.getWorkflow('load-test')).toBeDefined();
+    expect(registry.getWorkflow('web-quality')).toBeDefined();
   });
 
   it('should find godmode_build workflow with its steps', () => {

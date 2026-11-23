@@ -2,14 +2,38 @@
 trigger: model_decision
 description: Apply when designing a system, choosing architecture, splitting services/modules, modeling a domain, or writing the TDD
 ---
-# Architecture rules
-- **Start simple**: modular monolith first; extract a service only for independent scaling, ownership, or failure isolation. Microservices are a cost, not a goal.
-- **Boundaries**: group by feature/domain, not by file type; dependencies point inward (domain does not import framework/DB/UI); keep framework code at the edges.
-- **Principles**: SOLID where it reduces change cost, composition over inheritance, high cohesion/low coupling, Law of Demeter, tell-don't-ask, program to interfaces at seams, pure functions for logic, YAGNI.
-- **Domain**: ubiquitous language in code and docs; entities vs value objects; avoid anemic models when rules are rich; use cases/services express one business action.
-- **Data & consistency**: choose consistency per use case (strong for money/inventory, eventual for feeds/analytics); know CAP/PACELC trade-offs; CQRS/event sourcing only when read/write shapes or audit needs justify them.
-- **Integration**: sync (REST/gRPC) for queries needing an answer; async (queue/pub-sub) for side effects; outbox pattern for reliable events; sagas with compensation for cross-service workflows; idempotent consumers.
-- **Resilience patterns**: retry+backoff+jitter, timeout, circuit breaker, bulkhead, queue-based load leveling, health endpoints, graceful degradation.
-- **Scalability**: cache (aside/read-through), CDN, replicas, horizontal stateless scaling, partitioning when needed; document the upgrade trigger for each free-tier service.
-- **Decisions**: record each significant choice as an ADR (context, options, decision, consequences). Prefer reversible decisions.
-- **TDD must include**: Threat Model, Roles and Permission Matrix, API Specification, repo structure choice, observability plan, failure modes.
+# High-Scalability Architecture & System Design Standards
+
+## 1. Core Principles & Capacity Planning
+- **Start Simple:** Modular monolith first; extract a service only when independent scaling, organizational ownership, or catastrophic failure isolation demands it. Microservices are an operational cost, not a design goal.
+- **Back-of-the-Envelope Math (Mandatory in TDD):**
+  - Calculate Average & Peak QPS ($\text{Peak QPS} = \text{Avg QPS} \times 2\text{--}3$).
+  - Storage estimation for 5-year growth including replication factors ($3\times$).
+  - Memory & Cache Sizing: apply the 80/20 Pareto rule (cache 20% of hot daily read data).
+
+## 2. Distributed Consistency & CAP/PACELC Trade-Offs
+- **Consistency vs. Availability:** Strong consistency ($CP$) for financial balances, seat reservations, and inventory deduction; Eventual consistency ($AP$) for social feeds, activity streams, and caching.
+- **Consistent Hashing:** Use consistent hash rings with 100–300 virtual nodes (tokens) per physical node to prevent hot-spot skew during dynamic node additions or failures.
+
+## 3. High-Performance Caching Topologies
+- **Cache-Aside (Lazy Loading):** Default for read-heavy workloads (90%+ reads). Invalidate explicitly on mutation.
+- **Cache Protection Directives:**
+  - *Stampede Prevention:* Distributed mutex locks (`SET NX`) on cache misses so only 1 thread refreshes DB.
+  - *Avalanche Prevention:* Inject random jitter into TTLs (`TTL = base_ttl + rand(-60, 60)`).
+  - *Penetration Prevention:* Bloom filter check before cache lookup OR cache `NULL` with short TTL (30s).
+
+## 4. Integration, Resiliency & Asynchronous Pipelines
+- **Idempotency Keys:** Every mutation API (`POST /payments`, `POST /orders`) MUST require an `Idempotency-Key` header with 24-hour deduplication stored in Redis.
+- **Transactional Outbox:** Write business entity + outbox event to local DB in a single ACID transaction; relay asynchronously to message broker (Kafka/RabbitMQ/Decaton).
+- **Circuit Breaker Pattern:** Guard remote and third-party APIs with a 3-state circuit breaker (Closed, Open, Half-Open). Fast-fail during cooldown without consuming network threads.
+- **Exponential Backoff with Full Jitter:** Retries must always use randomized jitter ($\text{Sleep} = \text{rand}(0, \, \min(\text{cap}, \, \text{base} \times 2^{\text{attempt}}))$) to prevent thundering herds on recovering servers.
+- **Bulkhead Isolation:** Isolate critical resource pools (checkout, auth) from high-volume non-critical tasks (PDF generation, logging).
+
+## 5. Architectural Deliverables (TDD Spec Standard)
+Every Technical Design Document (TDD) must explicitly include:
+- Capacity Planning Calculations (QPS, Storage, Bandwidth, Memory).
+- High-level Mermaid Architecture Diagram.
+- Data Storage, Sharding Key, and Caching Topology.
+- Threat Model & Roles/Permissions Matrix.
+- API Specifications with Error Codes and Idempotency Guarantees.
+- Failure Modes, Circuit Breakers, and Graceful Degradation Plans.

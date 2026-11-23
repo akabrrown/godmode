@@ -32,6 +32,16 @@ describe('SkillRegistry (TDD Red -> Green)', () => {
     expect(uiSkill?.hasScripts).toBe(true);
   });
 
+  it('should correctly index new system design and web quality skills', () => {
+    expect(registry.getSkill('system-design-architect')).toBeDefined();
+    expect(registry.getSkill('load-testing-and-benchmarking')).toBeDefined();
+    expect(registry.getSkill('resilience-and-fault-tolerance')).toBeDefined();
+    expect(registry.getSkill('distributed-database-scaling')).toBeDefined();
+    expect(registry.getSkill('observability-and-profiling')).toBeDefined();
+    expect(registry.getSkill('web-quality-audit')).toBeDefined();
+    expect(registry.getSkill('core-web-vitals')).toBeDefined();
+  });
+
   it('should search skills by keyword across name and description', () => {
     const searchResults = registry.search('video');
     expect(searchResults.length).toBeGreaterThan(0);

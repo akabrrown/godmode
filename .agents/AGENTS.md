@@ -74,6 +74,11 @@ Every deliverable must pass two strict tests before it is considered finished:
 | 7-Phase UI/UX & WCAG Review | `godmode-ui-ux-anti-slop`, `playwright-testing` | `/design-review` |
 | Technical Marketing, CRO, SEO, Launch | `godmode-marketing-growth` | `/godmode-market` |
 | Deep Research, Academic Review, Intelligence | `godmode-deep-research` | `/godmode-research` |
+| High-Scalability System Design | `system-design-architect`, `distributed-database-scaling` | `/system-design` |
+| Load Testing & Performance Benchmarking | `load-testing-and-benchmarking` | `/load-test` |
+| Web Quality & Core Web Vitals Audit | `web-quality-audit`, `core-web-vitals` | `/web-quality` |
+| Resilience, Circuit Breakers & Rate Limits | `resilience-and-fault-tolerance` | Stage execution |
+| Distributed Tracing & Profiling | `observability-and-profiling` | Stage execution |
 | API Specification & Architecture | `godmode-api-design-blueprints` | Stage execution |
 | Database Schema, Migrations, ORM Performance | `godmode-database-orm-mastery` | Stage execution |
 | Security Hardening, Auth, OWASP Audit | `godmode-auth-security-hardening` | Preflight & Review |
