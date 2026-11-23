@@ -13,7 +13,7 @@ describe('SkillRegistry (TDD Red -> Green)', () => {
 
   it('should successfully index all skills in the workspace', () => {
     const allSkills = registry.getAllSkills();
-    expect(allSkills.length).toBeGreaterThanOrEqual(285);
+    expect(allSkills.length).toBeGreaterThanOrEqual(300);
   });
 
   it('should retrieve a specific skill by exact name with parsed frontmatter', () => {
@@ -40,6 +40,12 @@ describe('SkillRegistry (TDD Red -> Green)', () => {
     expect(registry.getSkill('observability-and-profiling')).toBeDefined();
     expect(registry.getSkill('web-quality-audit')).toBeDefined();
     expect(registry.getSkill('core-web-vitals')).toBeDefined();
+    expect(registry.getSkill('ai-database-and-sql-intelligence')).toBeDefined();
+    expect(registry.getSkill('high-throughput-message-queues')).toBeDefined();
+    expect(registry.getSkill('redis-caching')).toBeDefined();
+    expect(registry.getSkill('cloud-infrastructure-governance')).toBeDefined();
+    expect(registry.getSkill('network-security-mesh')).toBeDefined();
+    expect(registry.getSkill('production-process-management')).toBeDefined();
   });
 
   it('should search skills by keyword across name and description', () => {

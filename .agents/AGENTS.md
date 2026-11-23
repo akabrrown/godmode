@@ -81,6 +81,12 @@ Every deliverable must pass two strict tests before it is considered finished:
 | Distributed Tracing & Profiling | `observability-and-profiling` | Stage execution |
 | API Specification & Architecture | `godmode-api-design-blueprints` | Stage execution |
 | Database Schema, Migrations, ORM Performance | `godmode-database-orm-mastery` | Stage execution |
+| Natural Language SQL & Database Intelligence | `ai-database-and-sql-intelligence` | Stage execution |
+| Distributed Message Queues & Event-Loop Streaming | `high-throughput-message-queues` | Stage execution |
+| Distributed Redis Caching & Invalidation | `redis-caching` | Stage execution |
+| Cloud Infrastructure Governance & Cost Pruning | `cloud-infrastructure-governance` | Stage execution |
+| Zero-Trust Mesh & eBPF Security Policies | `network-security-mesh` | Stage execution |
+| Production Process Management & Zero-Downtime Reload | `production-process-management` | Stage execution |
 | Security Hardening, Auth, OWASP Audit | `godmode-auth-security-hardening` | Preflight & Review |
 | MCP Tool Design & Agent Integration | `godmode-mcp-agent-integration` | Stage execution |
 | Multi-Step Complex Media / Pipeline | `godmode-pipeline-production` | Rule Zero Pipeline |
